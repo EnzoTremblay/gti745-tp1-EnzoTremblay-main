@@ -79,5 +79,24 @@ public class PlayerController : MonoBehaviour
         GameManager.Instance.SetInPowerMode(true); // Set the game manager to power mode
         yield return new WaitForSeconds(powerDuration); // Wait for the duration of the power-up
         GameManager.Instance.SetInPowerMode(false); // Set the game manager back to normal mode
-    }      
+    }  
+
+    public void OnMoveFromPose(Vector3 movement)
+    {
+        Vector3 move = movement * speed * Time.deltaTime; // Utiliser la vitesse normale
+
+        if (GameManager.Instance.IsInPowerMode()) // Vérifier si le joueur est en mode power-up
+        {
+            move = movement * speedPowerUp * Time.deltaTime; // Utiliser la vitesse du power-up
+        }
+
+        characterController.Move(move); // Déplacer le joueur
+
+        // Faire pivoter le joueur pour faire face à la direction du mouvement
+        if (move != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speedRotation);
+        }
+    }
 }

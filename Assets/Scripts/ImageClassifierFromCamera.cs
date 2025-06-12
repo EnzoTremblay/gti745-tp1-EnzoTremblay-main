@@ -92,7 +92,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         Debug.Log("Output data: " + string.Join(", ", outputData));
 
         int predictedClass = -1;
-        float maxConfidence = 0.15f; // Seuil de confiance minimum
+        float maxConfidence = 0.05f; // Seuil de confiance minimum
 
         for (int i = 0; i < outputData.Length; i++)
         {
@@ -108,23 +108,38 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     private void HandlePrediction(int predictedClass)
     {
+        Vector3 movement = Vector3.zero;
+
         switch (predictedClass)
         {
-            case 0:
-                resultText.text = "Pose détectée: Pose 1";
+            case 0: // Gauche
+                resultText.text = "Pose détectée: Gauche";
+                movement = Vector3.left;
                 break;
-            case 1:
-                resultText.text = "Pose détectée: Pose 2";
+            case 1: // Droite
+                resultText.text = "Pose détectée: Droite";
+                movement = Vector3.right;
                 break;
-            case 2:
-                resultText.text = "Pose détectée: Pose 3";
+            case 2: // Haut
+                resultText.text = "Pose détectée: Haut";
+                movement = Vector3.forward;
                 break;
-            case 3:
-                resultText.text = "Pose détectée: Pose 4";
+            case 3: // Bas
+                resultText.text = "Pose détectée: Bas";
+                movement = Vector3.back;
                 break;
             default:
                 resultText.text = "Pose inconnue";
                 break;
+        }
+
+        if (movement != Vector3.zero)
+        {
+            PlayerController playerController = Object.FindAnyObjectByType<PlayerController>();
+            if (playerController != null)
+            {
+                playerController.OnMoveFromPose(movement);
+            }
         }
     }
 
